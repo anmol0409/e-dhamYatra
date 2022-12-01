@@ -1,8 +1,14 @@
+import 'package:e_chardham_yatra/pages/SplashScreen.dart';
+import 'package:e_chardham_yatra/pages/onboarding_page.dart';
+import 'package:e_chardham_yatra/values/colors.dart';
 import 'package:e_chardham_yatra/pages/AccomodationPage.dart';
 import 'package:e_chardham_yatra/pages/BlogPage.dart';
 import 'package:e_chardham_yatra/pages/CalendarPage.dart';
 import 'package:e_chardham_yatra/pages/HomePage.dart';
+import 'package:e_chardham_yatra/pages/LoginPage.dart';
+import 'package:e_chardham_yatra/values/dimens.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,21 +22,24 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        theme: ThemeData(fontFamily: 'Poppins'),
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+            primaryColor: AppColor.primary,
+            backgroundColor: AppColor.background,
+            scaffoldBackgroundColor: AppColor.background,
+            fontFamily: 'Poppins'),
         title: 'Utrakhand Tourism',
-        home: const BottomNav());
+        home: const Material(child: HomePage()));
   }
 }
 
-class BottomNav extends StatefulWidget {
-  const BottomNav({Key? key}) : super(key: key);
-
+class MainContent extends StatefulWidget {
+  const MainContent({Key? key}) : super(key: key);
   @override
-  State<BottomNav> createState() => _BottomNavState();
+  State<MainContent> createState() => _MainContentState();
 }
 
-class _BottomNavState extends State<BottomNav> {
-  static const double iconSize = 30;
+class _MainContentState extends State<MainContent> {
   int _selectedIndex = 0;
 
   static const List<Widget> _pages = [
@@ -59,62 +68,42 @@ class _BottomNavState extends State<BottomNav> {
       return Stack(
         children: [
           _pages.elementAt(_selectedIndex),
-          Align(
-              alignment: Alignment.bottomCenter,
-              child: Theme(
-                  child: newMethod(width),
-                  data: Theme.of(context)
-                      .copyWith(canvasColor: Colors.transparent)))
+          Align(alignment: Alignment.bottomCenter, child: bottomNav(width))
         ],
       );
     }));
   }
 
-  Container newMethod(width) {
-    return Container(
+  Widget bottomNav(width) {
+    return SizedBox(
         width: width,
-        margin: const EdgeInsets.only(bottom: 20, left: 30, right: 30),
-        decoration: const BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-                offset: Offset(4, 14),
-                color: Color.fromARGB(223, 158, 121, 103),
-                spreadRadius: 4,
-                blurRadius: 24)
-          ],
-          gradient:
-              LinearGradient(colors: [Color(0xFF44BCFF), Color(0xFF26F384)]),
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-        ),
-        child: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          elevation: 0,
-          showSelectedLabels: false, // <-- HERE
+        child: SnakeNavigationBar.color(
+          behaviour: SnakeBarBehaviour.floating,
+          snakeShape: SnakeShape.circle,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppDimens.cornerRadius)),
+          padding: const EdgeInsets.only(bottom: 12, left: 50, right: 50),
+
+          ///configuration for SnakeNavigationBar.color
+          snakeViewColor: AppColor.bottomBar,
+          selectedItemColor: Colors.black,
+          unselectedItemColor: Colors.blueGrey.withOpacity(.7),
+          backgroundColor: Colors.white.withOpacity(.95),
+
           showUnselectedLabels: false,
-          backgroundColor: Colors.transparent,
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.white.withOpacity(.70),
-          selectedFontSize: 14,
-          unselectedFontSize: 14,
-          onTap: _onItemTapped,
+          showSelectedLabels: false,
+
           currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
           items: const [
             BottomNavigationBarItem(
-              label: 'Home',
-              icon: Icon(Icons.home_rounded, size: iconSize),
-            ),
+                icon: Icon(Icons.home_rounded), label: 'Home'),
             BottomNavigationBarItem(
-              label: 'hotel',
-              icon: Icon(Icons.hotel_rounded, size: iconSize),
-            ),
+                icon: Icon(Icons.hotel_rounded), label: 'Accommodation'),
             BottomNavigationBarItem(
-              label: 'calendar',
-              icon: Icon(Icons.today_rounded, size: iconSize),
-            ),
+                icon: Icon(Icons.calendar_month_rounded), label: 'Calendar'),
             BottomNavigationBarItem(
-              label: 'Blog',
-              icon: Icon(Icons.forum_rounded, size: iconSize),
-            ),
+                icon: Icon(Icons.forum_rounded), label: 'Blog'),
           ],
         ));
   }
